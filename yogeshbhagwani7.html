@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Reminder System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <div class="flex flex-col lg:flex-row lg:gap-8">
+
+            <!-- === USER PROFILE BOX === -->
+            <aside class="w-full lg:w-1/3 lg:sticky lg:top-8 mb-8 lg:mb-0">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex flex-col items-center">
+                        <img src="https://placehold.co/128x128/6366f1/white?text=T" 
+                             alt="User Profile Picture"
+                             class="w-32 h-32 rounded-full mb-4 border-4 border-white shadow-md">
+                        <h1 class="text-3xl font-bold text-gray-900">Tilak Gupta</h1>
+                        <p class="text-md text-gray-500">Data Analyst/Automation Script Developer</p>
+                    </div>
+
+                    <ul class="mt-8 space-y-4">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="linkedin" class="w-5 h-5 text-indigo-500"></i>
+                            <a href="https://https://www.linkedin.com/in/yogesh-bhagwani-b63048332?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="text-gray-600 hover:text-indigo-600 hover:underline">https://www.linkedin.com/in/yogesh-bhagwani-b63048332?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-indigo-500"></i>
+                            <a href="mailto:yogeshbhagwani7@gmail.com" class="text-gray-600 hover:text-indigo-600 hover:underline">yogeshbhagwani7@gmail.com</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="github" class="w-5 h-5 text-indigo-500"></i>
+                            <a href="https://https://github.com/Anetoneio" class="text-gray-600 hover:text-indigo-600 hover:underline">https://github.com/Anetoneio</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- === PROJECT DETAILS === -->
+            <main class="w-full lg:w-2/3">
+                <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                    <section>
+                        <h2 class="text-3xl font-bold text-indigo-600 mb-4">Project Idea: "Personal Reminder System"</h2>
+                        <p class="text-lg text-gray-700 leading-relaxed">Helps overcome forgetfulness by creating and tracking reminders. It’s a simple system to manage daily tasks and appointments.</p>
+                    </section>
+
+                    <section class="mt-8">
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-4">Tech Stack</h3>
+                        <div class="flex flex-wrap gap-3">
+                            
+                              <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-4 py-1.5 rounded-full">Python</span>
+                            
+                              <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-4 py-1.5 rounded-full">Excel</span>
+                            
+                              <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-4 py-1.5 rounded-full">c++</span>
+                            
+                        </div>
+                    </section>
+
+                    <section class="mt-8">
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-4">Short Guide to Get Started</h3>
+                        <ol class="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
+                            <li>Use Python to create a script that takes reminder details (task, date, time) as input.</li><li>Store reminders in an Excel spreadsheet. Each row should represent a reminder.</li><li>Use Python to periodically check the Excel sheet for reminders due/overdue.</li><li>Use C++ (optional, for faster Excel read/write if performance becomes an issue) to handle the Excel file access functions, called from the Python script.</li><li>Implement a notification system (e.g., a simple print statement or, for a slightly more complex approach, interacting with the OS to display pop-up using Python) when a reminder is due.</li>
+                        </ol>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="w-full mt-12 mb-8">
+        <div class="container mx-auto max-w-6xl px-8">
+            <div class="flex justify-center gap-6 mb-4">
+                <a href="https://www.linkedin.com/posts/gdgsistec_gdgoncampus-teamgdg-professionalexcellence-activity-7387031483007447040-Zl3W" class="text-gray-500 hover:text-blue-600" title="GDG SISTEC LinkedIn">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.instagram.com/gdg_sistec?igsh=MXdiN20zaW54c3Q3dA==" class="text-gray-500 hover:text-pink-600" title="GDG SISTEC Instagram">
+                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                </a>
+                <a href="https://x.com/gdsc_sistec" class="text-gray-500 hover:text-sky-500" title="GDG SISTEC Twitter">
+                    <i data-lucide="twitter" class="w-6 h-6"></i>
+                </a>
+            </div>
+
+            <div class="border-t border-gray-300 pt-6 text-center">
+                <p class="text-sm text-gray-500 mb-2">
+                    Created with ❤️ by Tilak Gupta
+                </p>
+                <a href="https://linktr.ee/tilakgupta2005" target="_blank" class="text-sm font-medium text-indigo-600 hover:underline flex items-center justify-center gap-2">
+                    <i data-lucide="link" class="w-4 h-4"></i>
+                    Connect with the developer
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
