@@ -1,0 +1,586 @@
+{
+  "name": "Project_Generator_Automation_GDG",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE",
+          "mode": "list",
+          "cachedResultName": "Project_Generator_Automation_GDG (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 315491468,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE/edit#gid=315491468"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        96
+      ],
+      "id": "2f4d15d9-b325-41a6-97fc-59f45b69c65b",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "oAhQorfT9V3jtTmm",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"role\": \"Full Stack Developer\",\n  \"project_title\": \"Personal Finance Tracker\",\n  \"problem_it_solves\": \"Helps users track their income, expenses, and savings visually.\",\n  \"tech_stack\": [\"JavaScript\", \"HTML\", \"CSS\", \"Node.js\", \"Express.js\", \"MongoDB\"],\n  \"short_guide\": [\n    \"Design a simple frontend with HTML, CSS, and JavaScript to add and display transactions.\",\n    \"Create a Node.js/Express.js backend to handle CRUD operations.\",\n    \"Use MongoDB to store user transactions and categories.\",\n    \"Add a dashboard with charts to visualize expenses per category.\",\n    \"Deploy using Render or Vercel for free hosting.\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1472,
+        192
+      ],
+      "id": "69c63bce-df11-44b0-aaec-193f31e8c9ec",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Student Info:\n- Known Technologies: {{ $json['What technologies or programming languages are you familiar with?  (e.g., Python, JavaScript, Figma, C++, Excel, etc. This helps me know what level to aim for.) '] }}\n- Interest or Challenge: {{ $json['What is your biggest daily challenge/problem? (e.g., \"I find it hard to manage my study schedule,\" or \" I can\\'t find time to learn new things\" or \" I waste too much time on reels.\")  '] }}\n\nYour Task:\nCreate one detailed project idea using only the technologies listed above.\n\nFollow this JSON schema exactly:\n\n{\n  \"role\": \"string (based on their tech stack, e.g., Frontend Developer, Backend Developer, Data Analyst, etc.)\",\n  \"project_title\": \"string (short, catchy, relevant title)\",\n  \"problem_it_solves\": \"string (real-world issue this project addresses)\",\n  \"tech_stack\": [\"string\", \"string\", \"...\"],\n  \"short_guide\": [\n    \"step 1 (short actionable step)\",\n    \"step 2 (clear and specific task)\",\n    \"step 3\",\n    \"step 4\",\n    \"step 5\"\n  ]\n}\n\nRules:\n- Never include technologies not in their list.\n- Don’t repeat field names or add extra text outside JSON.\n- Focus on practical projects they can actually complete.\n- try to explain in the way user friendly way",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an expert software project mentor and technical content generator. \nYour job is to suggest **practical project ideas** that can be realistically built \nusing the technologies a student already knows — without requiring them to learn new tech.\n\nYou must:\n- Use only the technologies mentioned in the input.\n- Suggest a project relevant to their interest or problem statement.\n- Output a clean JSON structure that strictly follows the required schema.\n- Keep explanations clear, short, and actionable.\n\nIf a student provides fewer technologies, create a simple but useful project with them. \nIf they provide more, propose something slightly advanced — but still within their stack.\n\nYour output must **strictly follow the schema** below."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1328,
+        -32
+      ],
+      "id": "4012b71c-e0d1-4673-a642-1fcfaa5f4704",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- Combine your JSON data ---\nconst project = $input.first().json.output  || {}; // Second JSON: project info\n\n// --- Extract data safely ---\nconst name = $('Split Out').first().json['Full Name'];\nconst email = $('Wait').first().json['Email Address'];\nconst linkedin = $('Wait').first().json.Linkedin || \"#\";\nconst github = $('Wait').first().json.Github  || \"#\";\n\nconst role = project.role || \"Developer\";\nconst projectTitle = project.project_title || \"Untitled Project\";\nconst problem = project.problem_it_solves || \"No problem statement provided.\";\nconst techStack = project.tech_stack || [];\nconst shortGuide = project.short_guide || [];\n\n// --- Build the HTML based on your original code ---\nconst htmlContent = `\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>${projectTitle}</title>\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <script src=\"https://unpkg.com/lucide@latest\"></script>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">\n    <style>body { font-family: 'Inter', sans-serif; }</style>\n</head>\n<body class=\"bg-gray-100 text-gray-800\">\n\n    <div class=\"container mx-auto max-w-6xl p-4 sm:p-6 lg:p-8\">\n        <div class=\"flex flex-col lg:flex-row lg:gap-8\">\n\n            <!-- === USER PROFILE BOX === -->\n            <aside class=\"w-full lg:w-1/3 lg:sticky lg:top-8 mb-8 lg:mb-0\">\n                <div class=\"bg-white rounded-xl shadow-lg p-6\">\n                    <div class=\"flex flex-col items-center\">\n                        <img src=\"https://placehold.co/128x128/6366f1/white?text=${name.charAt(0).toUpperCase()}\" \n                             alt=\"User Profile Picture\"\n                             class=\"w-32 h-32 rounded-full mb-4 border-4 border-white shadow-md\">\n                        <h1 class=\"text-3xl font-bold text-gray-900\">${name}</h1>\n                        <p class=\"text-md text-gray-500\">${role}</p>\n                    </div>\n\n                    <ul class=\"mt-8 space-y-4\">\n                        <li class=\"flex items-center gap-3\">\n                            <i data-lucide=\"linkedin\" class=\"w-5 h-5 text-indigo-500\"></i>\n                            <a href=\"https://${linkedin}\" class=\"text-gray-600 hover:text-indigo-600 hover:underline\">${linkedin}</a>\n                        </li>\n                        <li class=\"flex items-center gap-3\">\n                            <i data-lucide=\"mail\" class=\"w-5 h-5 text-indigo-500\"></i>\n                            <a href=\"mailto:${email}\" class=\"text-gray-600 hover:text-indigo-600 hover:underline\">${email}</a>\n                        </li>\n                        <li class=\"flex items-center gap-3\">\n                            <i data-lucide=\"github\" class=\"w-5 h-5 text-indigo-500\"></i>\n                            <a href=\"https://${github}\" class=\"text-gray-600 hover:text-indigo-600 hover:underline\">${github}</a>\n                        </li>\n                    </ul>\n                </div>\n            </aside>\n\n            <!-- === PROJECT DETAILS === -->\n            <main class=\"w-full lg:w-2/3\">\n                <div class=\"bg-white rounded-xl shadow-lg p-6 md:p-8\">\n                    <section>\n                        <h2 class=\"text-3xl font-bold text-indigo-600 mb-4\">Project Idea: \"${projectTitle}\"</h2>\n                        <p class=\"text-lg text-gray-700 leading-relaxed\">${problem}</p>\n                    </section>\n\n                    <section class=\"mt-8\">\n                        <h3 class=\"text-2xl font-semibold text-gray-900 mb-4\">Tech Stack</h3>\n                        <div class=\"flex flex-wrap gap-3\">\n                            ${techStack.map(t => `\n                              <span class=\"bg-indigo-100 text-indigo-800 text-sm font-medium px-4 py-1.5 rounded-full\">${t}</span>\n                            `).join(\"\")}\n                        </div>\n                    </section>\n\n                    <section class=\"mt-8\">\n                        <h3 class=\"text-2xl font-semibold text-gray-900 mb-4\">Short Guide to Get Started</h3>\n                        <ol class=\"list-decimal list-inside space-y-3 text-gray-700 leading-relaxed\">\n                            ${shortGuide.map(step => `<li>${step}</li>`).join(\"\")}\n                        </ol>\n                    </section>\n                </div>\n            </main>\n        </div>\n    </div>\n\n    <footer class=\"w-full mt-12 mb-8\">\n        <div class=\"container mx-auto max-w-6xl px-8\">\n            <div class=\"flex justify-center gap-6 mb-4\">\n                <a href=\"https://www.linkedin.com/posts/gdgsistec_gdgoncampus-teamgdg-professionalexcellence-activity-7387031483007447040-Zl3W\" class=\"text-gray-500 hover:text-blue-600\" title=\"GDG SISTEC LinkedIn\">\n                    <i data-lucide=\"linkedin\" class=\"w-6 h-6\"></i>\n                </a>\n                <a href=\"https://www.instagram.com/gdg_sistec?igsh=MXdiN20zaW54c3Q3dA==\" class=\"text-gray-500 hover:text-pink-600\" title=\"GDG SISTEC Instagram\">\n                    <i data-lucide=\"instagram\" class=\"w-6 h-6\"></i>\n                </a>\n                <a href=\"https://x.com/gdsc_sistec\" class=\"text-gray-500 hover:text-sky-500\" title=\"GDG SISTEC Twitter\">\n                    <i data-lucide=\"twitter\" class=\"w-6 h-6\"></i>\n                </a>\n            </div>\n\n            <div class=\"border-t border-gray-300 pt-6 text-center\">\n                <p class=\"text-sm text-gray-500 mb-2\">\n                    Created with ❤️ by Tilak Gupta\n                </p>\n                <a href=\"https://linktr.ee/tilakgupta2005\" target=\"_blank\" class=\"text-sm font-medium text-indigo-600 hover:underline flex items-center justify-center gap-2\">\n                    <i data-lucide=\"link\" class=\"w-4 h-4\"></i>\n                    Connect with the developer\n                </a>\n            </div>\n        </div>\n    </footer>\n\n    <script>lucide.createIcons();</script>\n</body>\n</html>\n`;\n\n// --- Return as downloadable file in n8n ---\nreturn [\n  {\n    json: {\n      email,\n      name,\n      fileName: email.split(\"@\")[0] + \".html\", // unique filename\n      html: htmlContent\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -32
+      ],
+      "id": "c6032f05-f21f-43b7-a606-cba18b845966",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "html",
+        "binaryPropertyName": "=data",
+        "options": {
+          "fileName": "={{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1904,
+        -32
+      ],
+      "id": "89a09b7e-6ab8-4aed-8823-140f5a61d253",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Google Sheets Trigger').item.json['Email Address'] }}",
+        "subject": "Your Project Idea is Ready!!",
+        "message": "=<div style=\"font-family: Arial, sans-serif; color: #333333; font-size: 16px; line-height: 1.6;\">\n  <p>Hey {{ $('Google Sheets Trigger').item.json[\"Full Name\"] }}! 👋</p>\n\n  <p>\n    Thanks for sharing your daily life challenges — your response helped us understand what matters most. 💬\n  </p>\n\n  <p>We’ve worked on a solution inspired by your inputs — check it out here 👇</p>\n\n  <div style=\"text-align: center; margin: 24px 0;\">\n    <a href=\"https://tilakgupta2005.github.io/project_generator/{{ $json.content.name }}\"\n       target=\"_blank\"\n       style=\"background-color:#28a745;\n              color:#ffffff;\n              text-decoration:none;\n              padding:12px 24px;\n              border-radius:6px;\n              font-weight:bold;\n              font-family:Arial, sans-serif;\n              font-size:16px;\n              display:inline-block;\">\n      View Solution!\n    </a>\n  </div>\n\n  <p>\n    Also, if you enjoy seeing how tech turns real problems into creative solutions, check out <strong>GDG</strong> — a community where learners and innovators build cool things! 🚀\n  </p>\n\n  <p>\n    Cheers,<br>\n    <a href=\"https://linktr.ee/tilakgupta2005\" target=\"_blank\"\n       style=\"color:#28a745; text-decoration:none; font-weight:bold;\">\n      Tilak Gupta\n    </a>\n  </p>\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2352,
+        -32
+      ],
+      "id": "dc21fe1f-6663-4629-8150-22fbd4b22342",
+      "name": "Send a message",
+      "webhookId": "da373463-e5d1-4fb6-b474-af6f958acb16",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AMJIdKJrsaEOBRED",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/tilakgupta2005",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "project_generator",
+          "mode": "list",
+          "cachedResultName": "project_generator",
+          "cachedResultUrl": "https://github.com/tilakgupta2005/project_generator"
+        },
+        "filePath": "={{ $('Code').item.json.fileName }}",
+        "fileContent": "={{ $('Code').item.json.html }}",
+        "commitMessage": "=Added {{ $('Code').item.json.fileName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2128,
+        -32
+      ],
+      "id": "0993bcaa-c2a4-459f-956e-e428f743edb1",
+      "name": "Create a file",
+      "webhookId": "f4f52d2e-cf83-468d-ac39-cde677965861",
+      "credentials": {
+        "githubApi": {
+          "id": "JfduBH95MbzOvP8R",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1104,
+        -32
+      ],
+      "id": "36f008a5-d8ca-465f-80d4-50c36b6b70dc",
+      "name": "Wait",
+      "webhookId": "b949baf6-f28f-43f0-a0bb-429e9fff1de2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Timestamp",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        656,
+        96
+      ],
+      "id": "5a385e08-772f-4612-b557-ade0704b466a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        880,
+        96
+      ],
+      "id": "5e87036f-1245-4c44-86f1-0b0f66c3165a",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        192
+      ],
+      "id": "7c3d00e5-b841-46de-a7b1-860d5da693b4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ogrnPEI4wJIkNAjo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE",
+          "mode": "list",
+          "cachedResultName": "Project_Generator_Automation_GDG (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 315491468,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_1yci7KeeP2RAvzE9aCcXCzKMFpqM9zfomdAZXqvfUE/edit#gid=315491468"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Mail Sent": "Sent",
+            "Email Address": "={{ $('Google Sheets Trigger').item.json['Email Address'] }}"
+          },
+          "matchingColumns": [
+            "Email Address"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Enrollment Number",
+              "displayName": "Enrollment Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Github",
+              "displayName": "Github",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Linkedin",
+              "displayName": "Linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "What technologies or programming languages are you familiar with?  (e.g., Python, JavaScript, Figma, C++, Excel, etc. This helps me know what level to aim for.) ",
+              "displayName": "What technologies or programming languages are you familiar with?  (e.g., Python, JavaScript, Figma, C++, Excel, etc. This helps me know what level to aim for.) ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "What is your biggest daily challenge/problem? (e.g., \"I find it hard to manage my study schedule,\" or \" I can't find time to learn new things\" or \" I waste too much time on reels.\")  ",
+              "displayName": "What is your biggest daily challenge/problem? (e.g., \"I find it hard to manage my study schedule,\" or \" I can't find time to learn new things\" or \" I waste too much time on reels.\")  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mail Sent",
+              "displayName": "Mail Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2576,
+        96
+      ],
+      "id": "d0e016f2-dae8-45db-83f2-20f54650298f",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CjDRzwyHRAKIXByn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c9f7a939-87aa-4270-b421-13590a60f254",
+              "leftValue": "={{ $json['Mail Sent'] }}",
+              "rightValue": "Sent",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        96
+      ],
+      "id": "3df0f2fb-0b4c-47dc-98db-a195d511f32a",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "HtDNOhLjeEbiNt7X"
+  },
+  "versionId": "d4828aac-aa6d-484e-be8e-0c30035ff312",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "06404b51ec0ec5d9a35d03523466705b6c888aa1b0d36e31f206ac0b53159836"
+  },
+  "id": "HtDNOhLjeEbiNt7X",
+  "tags": []
+}
